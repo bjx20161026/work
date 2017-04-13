@@ -30,6 +30,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.jobsAutomatic.dao.OperateWorkOrder;
 import com.jobsAutomatic.service.modle.QueryCondition;
+import com.jobsAutomatic.service.modle.ReplyWorkOrder;
 import com.jobsAutomatic.service.modle.WorkOrder;
 import com.jobsAutomatic.service.tempRetire.OrderClassify;
 
@@ -57,7 +58,7 @@ public class ListTestController {
 	}
 
 	@RequestMapping(value = "/getOrderByCondition", method = RequestMethod.POST)
-	public @ResponseBody List<WorkOrder> getOrderByCondition(@RequestBody String code) {
+	public @ResponseBody ReplyWorkOrder getOrderByCondition(@RequestBody String code) {
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
 		QueryCondition queryCondition = gson.fromJson(code, QueryCondition.class);
 		return operateWorkOrder.getOrderByCondition(queryCondition);

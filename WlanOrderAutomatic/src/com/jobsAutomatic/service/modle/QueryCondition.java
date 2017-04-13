@@ -8,8 +8,20 @@ public class QueryCondition {
 	private String statement;
 	private Date send_time;
 	private Date finishtime;
-	private String startIndex;
-	private String lastIndex;
+	private int start;
+	private int limit;
+	public int getStart() {
+		return start;
+	}
+	public void setStart(int start) {
+		this.start = start;
+	}
+	public int getLimit() {
+		return limit;
+	}
+	public void setLimit(int limit) {
+		this.limit = limit;
+	}
 	public String getWorkjob_id() {
 		return workjob_id;
 	}
@@ -40,17 +52,4 @@ public class QueryCondition {
 	public void setFinishtime(Date finishtime) {
 		this.finishtime = finishtime;
 	}
-	public String getStartIndex() {
-		return startIndex;
-	}
-	public void setStartIndex(String startIndex) {
-		this.startIndex = startIndex;
-	}
-	public String getLastIndex() {
-		return lastIndex;
-	}
-	public void setLastIndex(String lastIndex) {
-		this.lastIndex = lastIndex;
-	}
-
 }

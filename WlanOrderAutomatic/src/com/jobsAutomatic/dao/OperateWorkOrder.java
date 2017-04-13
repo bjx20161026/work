@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import com.jobsAutomatic.service.modle.QueryCondition;
+import com.jobsAutomatic.service.modle.ReplyWorkOrder;
 import com.jobsAutomatic.service.modle.UpdateSql;
 import com.jobsAutomatic.service.modle.WorkJob;
 import com.jobsAutomatic.service.modle.WorkOrder;
@@ -31,23 +32,21 @@ public class OperateWorkOrder extends DaoSupport {
 		return workOrders;
 	}
 
-	public List<WorkOrder> getOrderByCondition(QueryCondition queryCondition) {
+	public ReplyWorkOrder getOrderByCondition(QueryCondition queryCondition) {
 		Util util = new Util();
 		List<UpdateSql> list = new ArrayList<UpdateSql>();
-		String startIndex = "0";
-		String lastIndex = "10";
+		int startIndex = 0;
+		int lastIndex = 20;
 		try{
-			startIndex=queryCondition.getStartIndex();
+			startIndex=queryCondition.getStart();
 		}catch(NullPointerException e){
-			startIndex = "0";
+			startIndex = 0;
 		}
 		try{
-			lastIndex=queryCondition.getLastIndex();
+			lastIndex=queryCondition.getLimit()+queryCondition.getStart();
 		}catch(NullPointerException e){
-			lastIndex = "10";
+			lastIndex = 20;
 		}
-		if(startIndex==null) startIndex = "0";
-		if(lastIndex==null) lastIndex = "10";
 		String workjob_id,workjob_type,statement;
 		Date send_time,finishtime;
 		try{
@@ -81,11 +80,21 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE"));
 		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
+		String sql2="";
+		if(!sql.equals("")) sql2 = "Select count(*) from work_order where "+sql;
+		else sql2 = "Select count(*) from work_order";
+		@SuppressWarnings("deprecation")
+		int totalSize = jdbcTemplate.queryForInt(sql2);
 		if(!sql.equals("")) sql = "Select * from work_order where "+sql;
 		else sql = "Select * from work_order";
 		RowMapper<WorkOrder> rowMapper = new BeanPropertyRowMapper<WorkOrder>(WorkOrder.class);
 		List<WorkOrder> workOrders = jdbcTemplate.query("SELECT * FROM (SELECT temp.* ,ROWNUM num FROM ( "+sql+" ) temp where ROWNUM <= ? ) WHERE　num > ?", rowMapper,lastIndex,startIndex);
-		return workOrders;
+		
+		
+		ReplyWorkOrder replyWorkOrder = new ReplyWorkOrder();
+		replyWorkOrder.setData(workOrders);
+		replyWorkOrder.setTotalSize(totalSize);
+		return replyWorkOrder;
 	}
 	
 	@SuppressWarnings("deprecation")
