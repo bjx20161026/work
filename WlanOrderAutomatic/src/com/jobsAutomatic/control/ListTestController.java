@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -57,10 +58,32 @@ public class ListTestController {
 		return operateWorkOrder.getAllOrder();
 	}
 
-	@RequestMapping(value = "/getOrderByCondition", method = RequestMethod.POST)
-	public @ResponseBody ReplyWorkOrder getOrderByCondition(@RequestBody String code) {
-		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-		QueryCondition queryCondition = gson.fromJson(code, QueryCondition.class);
+	@RequestMapping(value = "/getOrderByCondition", method = RequestMethod.GET)
+	public @ResponseBody ReplyWorkOrder getOrderByCondition(HttpServletRequest  Request) {
+		System.out.println("Request-->>"+Request.toString());
+		QueryCondition queryCondition = new QueryCondition();
+		queryCondition.setWorkjob_id(Request.getParameter("workjob_id"));
+		try {
+			queryCondition.setWorkjob_type(new String(Request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			queryCondition.setWorkjob_type(null);
+		}
+		queryCondition.setSend_time(Request.getParameter("send_time"));
+		queryCondition.setFinishtime(Request.getParameter("finishtime"));
+		queryCondition.setStatement(Request.getParameter("statement"));
+		queryCondition.setLimit(Request.getParameter("limit"));
+		queryCondition.setStart(Request.getParameter("start"));
+		System.out.println("workjob_id---->>>>>"+Request.getParameter("workjob_id"));
+		System.out.println("workjob_type---->>>>>"+Request.getParameter("workjob_type"));
+		System.out.println("Send_time---->>>>>"+Request.getParameter("Send_time"));
+		System.out.println("finishtime---->>>>>"+Request.getParameter("finishtime"));
+		System.out.println("statement---->>>>>"+Request.getParameter("statement"));
+		System.out.println("limit---->>>>>"+Request.getParameter("limit"));
+		System.out.println("start---->>>>>"+Request.getParameter("start"));
+//		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+//		QueryCondition queryCondition = gson.fromJson(code, QueryCondition.class);
 		return operateWorkOrder.getOrderByCondition(queryCondition);
 	}
 	@RequestMapping(value = "/getCountByCondition", method = RequestMethod.POST)
@@ -78,12 +101,13 @@ public class ListTestController {
 		return orderClassify.DoClassify(workOrders);
 	}
 
-	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.POST)
-	public ResponseEntity<byte[]> download(@RequestBody String code) throws IOException {
-		WorkOrder workOrders = new Gson().fromJson(code, WorkOrder.class);
-		String filePath = workOrders.getLocalfile();
+	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.GET)
+	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
+		String filePath = new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8");
+
+		System.out.println("localFile---->>>>"+request.getParameter("localFile"));
 		File file = new File(filePath);// "../logs/SpringMVC.log"
-		String dfileName = "SpringMVC.log";
+		String dfileName = filePath.replaceAll("../data/", "");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		headers.setContentDispositionFormData("attachment", dfileName);

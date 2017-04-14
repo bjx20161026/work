@@ -1,7 +1,6 @@
 package com.jobsAutomatic.dao;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -33,22 +32,23 @@ public class OperateWorkOrder extends DaoSupport {
 	}
 
 	public ReplyWorkOrder getOrderByCondition(QueryCondition queryCondition) {
+		String workjob_id,workjob_type,statement,send_time,finishtime;
 		Util util = new Util();
 		List<UpdateSql> list = new ArrayList<UpdateSql>();
-		int startIndex = 0;
-		int lastIndex = 20;
+		int start = 0;
+		int last = 100;
 		try{
-			startIndex=queryCondition.getStart();
-		}catch(NullPointerException e){
-			startIndex = 0;
+			start=Integer.parseInt(queryCondition.getStart());
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			start = 0;
 		}
 		try{
-			lastIndex=queryCondition.getLimit()+queryCondition.getStart();
-		}catch(NullPointerException e){
-			lastIndex = 20;
+			last=Integer.parseInt(queryCondition.getLimit())+start;
+		}catch(Exception e){
+			logger.error(e.getMessage());
+			last = 100;
 		}
-		String workjob_id,workjob_type,statement;
-		Date send_time,finishtime;
 		try{
 			workjob_id=queryCondition.getWorkjob_id();
 		}catch(NullPointerException e){
@@ -76,10 +76,11 @@ public class OperateWorkOrder extends DaoSupport {
 		}
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "VARCHAR"));
 		list.add(util.getUpdateSql("workjob_type", workjob_type, "VARCHAR"));
-		list.add(util.getUpdateSql("send_time", send_time, "DATE"));
-		list.add(util.getUpdateSql("finishtime", finishtime, "DATE"));
+		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
+		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
 		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
+		System.out.println("sql:"+sql);
 		String sql2="";
 		if(!sql.equals("")) sql2 = "Select count(*) from work_order where "+sql;
 		else sql2 = "Select count(*) from work_order";
@@ -88,7 +89,7 @@ public class OperateWorkOrder extends DaoSupport {
 		if(!sql.equals("")) sql = "Select * from work_order where "+sql;
 		else sql = "Select * from work_order";
 		RowMapper<WorkOrder> rowMapper = new BeanPropertyRowMapper<WorkOrder>(WorkOrder.class);
-		List<WorkOrder> workOrders = jdbcTemplate.query("SELECT * FROM (SELECT temp.* ,ROWNUM num FROM ( "+sql+" ) temp where ROWNUM <= ? ) WHERE　num > ?", rowMapper,lastIndex,startIndex);
+		List<WorkOrder> workOrders = jdbcTemplate.query("SELECT * FROM (SELECT temp.* ,ROWNUM num FROM ( "+sql+" ) temp where ROWNUM <= ? ) WHERE　num > ?", rowMapper,last,start);
 		
 		
 		ReplyWorkOrder replyWorkOrder = new ReplyWorkOrder();
@@ -102,7 +103,8 @@ public class OperateWorkOrder extends DaoSupport {
 		Util util = new Util();
 		List<UpdateSql> list = new ArrayList<UpdateSql>();
 		String workjob_id,workjob_type,statement;
-		Date send_time,finishtime;
+		String send_time;
+		String finishtime;
 		try{
 			workjob_id=queryCondition.getWorkjob_id();
 		}catch(NullPointerException e){
@@ -134,6 +136,7 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE"));
 		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
+
 		if(!sql.equals("")) sql = "Select count(*) from work_order where "+sql;
 		else sql = "Select count(*) from work_order";
 		return jdbcTemplate.queryForInt(sql);

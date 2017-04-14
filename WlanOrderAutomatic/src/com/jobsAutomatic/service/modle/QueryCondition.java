@@ -1,25 +1,23 @@
 package com.jobsAutomatic.service.modle;
 
-import java.util.Date;
-
 public class QueryCondition {
 	private String workjob_id;
 	private String workjob_type;
 	private String statement;
-	private Date send_time;
-	private Date finishtime;
-	private int start;
-	private int limit;
-	public int getStart() {
+	private String send_time;
+	private String finishtime;
+	private String start;
+	private String limit;
+	public String getStart() {
 		return start;
 	}
-	public void setStart(int start) {
+	public void setStart(String start) {
 		this.start = start;
 	}
-	public int getLimit() {
+	public String getLimit() {
 		return limit;
 	}
-	public void setLimit(int limit) {
+	public void setLimit(String limit) {
 		this.limit = limit;
 	}
 	public String getWorkjob_id() {
@@ -40,16 +38,16 @@ public class QueryCondition {
 	public void setStatement(String statement) {
 		this.statement = statement;
 	}
-	public Date getSend_time() {
+	public String getSend_time() {
 		return send_time;
 	}
-	public void setSend_time(Date send_time) {
+	public void setSend_time(String send_time) {
 		this.send_time = send_time;
 	}
-	public Date getFinishtime() {
+	public String getFinishtime() {
 		return finishtime;
 	}
-	public void setFinishtime(Date finishtime) {
+	public void setFinishtime(String finishtime) {
 		this.finishtime = finishtime;
 	}
 }

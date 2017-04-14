@@ -55,7 +55,9 @@ public class Util {
 				} else if (us.getVar().equals("DATE")) {
 					String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(us.getValue());
 					sql += us.getColumnName() + "=to_date('" + date + "','SYYYY-MM-DD HH24:MI:SS') and ";
-				}
+				} else if (us.getVar().equals("DATE2")) {
+						sql += us.getColumnName() + "=to_date('" + us.getValue() + "','SYYYY-MM-DD HH24:MI:SS') and ";
+					}
 			} 
 		}
 		if(!sql.equals("")) sql = sql.substring(0, sql.length() - 5);
