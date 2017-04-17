@@ -73,6 +73,8 @@ public class ListTestController {
 		queryCondition.setSend_time(Request.getParameter("send_time"));
 		queryCondition.setFinishtime(Request.getParameter("finishtime"));
 		queryCondition.setStatement(Request.getParameter("statement"));
+		queryCondition.setWorkjob_id(Request.getParameter("workjob_id"));
+		queryCondition.setWorkjob_type(Request.getParameter("workjob_type"));
 		queryCondition.setLimit(Request.getParameter("limit"));
 		queryCondition.setStart(Request.getParameter("start"));
 		System.out.println("workjob_id---->>>>>"+Request.getParameter("workjob_id"));
@@ -104,7 +106,6 @@ public class ListTestController {
 	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
 		String filePath = new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8");
-
 		System.out.println("localFile---->>>>"+request.getParameter("localFile"));
 		File file = new File(filePath);// "../logs/SpringMVC.log"
 		String dfileName = filePath.replaceAll("../data/", "");
