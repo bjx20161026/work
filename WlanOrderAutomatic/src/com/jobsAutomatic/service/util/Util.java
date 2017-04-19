@@ -57,7 +57,11 @@ public class Util {
 					sql += us.getColumnName() + "=to_date('" + date + "','SYYYY-MM-DD HH24:MI:SS') and ";
 				} else if (us.getVar().equals("DATE2")) {
 						sql += us.getColumnName() + "=to_date('" + us.getValue() + "','SYYYY-MM-DD HH24:MI:SS') and ";
-					}
+						}else if (us.getVar().equals("LIKE")){
+							sql += "upper("+ us.getColumnName()+") like upper('%"+ us.getValue()+"%') and ";
+						}else if (us.getVar().equals("NOTLIKE")){
+							sql += us.getColumnName() + " not like '%"+us.getValue()+"%' and ";
+						}
 			} 
 		}
 		if(!sql.equals("")) sql = sql.substring(0, sql.length() - 5);

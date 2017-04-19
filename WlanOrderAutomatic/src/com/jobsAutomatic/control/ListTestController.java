@@ -106,6 +106,7 @@ public class ListTestController {
 	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
 		String filePath = new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8");
+//		String filePath = request.getParameter("localFile");
 		System.out.println("localFile---->>>>"+request.getParameter("localFile"));
 		File file = new File(filePath);// "../logs/SpringMVC.log"
 		String dfileName = filePath.replaceAll("../data/", "");
