@@ -74,7 +74,7 @@ public class OperateWorkOrder extends DaoSupport {
 		}catch(NullPointerException e){
 			finishtime = null;
 		}
-		if(workjob_type!=null&&workjob_type.equals("非临时退服")) list.add(util.getUpdateSql("workjob_type", workjob_type, "NOTLIKE"));
+		if(workjob_type!=null&&workjob_type.equals("非临时退服")) list.add(util.getUpdateSql("workjob_type", "临时退服", "NOTLIKE"));
 		else list.add(util.getUpdateSql("workjob_type", workjob_type, "VARCHAR"));
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
 		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));

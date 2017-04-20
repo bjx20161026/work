@@ -3,6 +3,7 @@ package com.jobsAutomatic.control;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -109,7 +110,10 @@ public class ListTestController {
 //		String filePath = request.getParameter("localFile");
 		System.out.println("localFile---->>>>"+request.getParameter("localFile"));
 		File file = new File(filePath);// "../logs/SpringMVC.log"
-		String dfileName = filePath.replaceAll("../data/", "");
+		String dfileName = file.getName();
+		System.out.println(dfileName);
+//		dfileName=URLEncoder.encode(dfileName, "UTF-8");
+		dfileName = new String(dfileName.getBytes("utf-8"),"iso-8859-1");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		headers.setContentDispositionFormData("attachment", dfileName);
