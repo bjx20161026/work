@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
+import com.jobsAutomatic.dao.OperateWlanOpreateLog;
 import com.jobsAutomatic.dao.OperateWorkOrder;
 import com.jobsAutomatic.service.modle.QueryCondition;
 import com.jobsAutomatic.service.modle.ReplyWorkOrder;
@@ -46,6 +47,8 @@ public class ListTestController {
 	JdbcTemplate jdbcTemplate2;
 	@Autowired
 	OperateWorkOrder operateWorkOrder;
+	@Autowired
+	OperateWlanOpreateLog operateWlanOpreateLog;
 
 	@RequestMapping(value = "/test2/{name}", method = RequestMethod.GET)
 	public @ResponseBody List<Map<String, Object>> ListTest2(@PathVariable String name) {
@@ -71,6 +74,13 @@ public class ListTestController {
 			System.out.println(e.getMessage());
 			queryCondition.setWorkjob_type(null);
 		}
+		try {
+			queryCondition.setUser(new String(Request.getParameter("user").getBytes("iso-8859-1"),"utf-8"));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+			queryCondition.setWorkjob_type(null);
+		}
 		queryCondition.setSend_time(Request.getParameter("send_time"));
 		queryCondition.setFinishtime(Request.getParameter("finishtime"));
 		queryCondition.setStatement(Request.getParameter("statement"));
@@ -78,15 +88,17 @@ public class ListTestController {
 		queryCondition.setWorkjob_type(Request.getParameter("workjob_type"));
 		queryCondition.setLimit(Request.getParameter("limit"));
 		queryCondition.setStart(Request.getParameter("start"));
-		System.out.println("workjob_id---->>>>>"+Request.getParameter("workjob_id"));
-		System.out.println("workjob_type---->>>>>"+Request.getParameter("workjob_type"));
-		System.out.println("Send_time---->>>>>"+Request.getParameter("Send_time"));
-		System.out.println("finishtime---->>>>>"+Request.getParameter("finishtime"));
-		System.out.println("statement---->>>>>"+Request.getParameter("statement"));
-		System.out.println("limit---->>>>>"+Request.getParameter("limit"));
-		System.out.println("start---->>>>>"+Request.getParameter("start"));
-//		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-//		QueryCondition queryCondition = gson.fromJson(code, QueryCondition.class);
+//		System.out.println("workjob_id---->>>>>"+Request.getParameter("workjob_id"));
+//		System.out.println("workjob_type---->>>>>"+Request.getParameter("workjob_type"));
+//		System.out.println("Send_time---->>>>>"+Request.getParameter("Send_time"));
+//		System.out.println("finishtime---->>>>>"+Request.getParameter("finishtime"));
+//		System.out.println("statement---->>>>>"+Request.getParameter("statement"));
+//		System.out.println("limit---->>>>>"+Request.getParameter("limit"));
+//		System.out.println("start---->>>>>"+Request.getParameter("start"));
+////		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+////		QueryCondition queryCondition = gson.fromJson(code, QueryCondition.class);
+		logger.info("获取工单列表  --->>>"+queryCondition.toString());
+		operateWlanOpreateLog.Update(queryCondition.getUser(), "获取工单列表");
 		return operateWorkOrder.getOrderByCondition(queryCondition);
 	}
 	@RequestMapping(value = "/getCountByCondition", method = RequestMethod.POST)

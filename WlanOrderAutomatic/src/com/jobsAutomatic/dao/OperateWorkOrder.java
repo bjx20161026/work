@@ -23,6 +23,13 @@ public class OperateWorkOrder extends DaoSupport {
 				statement, issucced, failed_reason, workjob_id);
 		return i;
 	}
+	
+	public int Update(String statement,String user,String workjob_id){
+		int i =jdbcTemplate.update(
+				"update work_order set  statement= ?,operatetime = sysdate,ORDER_USER = ? where workjob_id = ?",
+				statement,user, workjob_id);
+		return i;
+	}
 
 	public List<WorkOrder> getAllOrder() {
 		logger.info("getAllOrder");

@@ -8,6 +8,13 @@ public class QueryCondition {
 	private String finishtime;
 	private String start;
 	private String limit;
+	private String user;
+	public String getUser() {
+		return user;
+	}
+	public void setUser(String user) {
+		this.user = user;
+	}
 	public String getStart() {
 		return start;
 	}
@@ -49,5 +56,16 @@ public class QueryCondition {
 	}
 	public void setFinishtime(String finishtime) {
 		this.finishtime = finishtime;
+	}
+	@Override
+	public String toString(){
+		return "workjob_id:"+workjob_id+"  workjob_type:"+workjob_type+"  statement:"+statement+" send_time:"+send_time+"  finishtime:"+finishtime+"  start:"+start+"  limit:"+limit+"  user:"+user;
+	}
+	
+	public static void main(String[] args){
+		QueryCondition queryCondition = new QueryCondition();
+		queryCondition.setWorkjob_id("12345");
+		queryCondition.setUser("system");
+		System.out.println(queryCondition.toString());
 	}
 }
