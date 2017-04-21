@@ -42,7 +42,7 @@ public class FileOperate {
 		ftpClient.connect(ffo.getHost());
 		ftpClient.login(ffo.getUsername(), ffo.getPassword());
 		ftpClient.enterLocalPassiveMode();
-
+		
 	}
 
 	public void cd() throws Exception {

@@ -108,16 +108,28 @@ public class ListTestController {
 	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
 		String filePath = new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8");
 //		String filePath = request.getParameter("localFile");
-		System.out.println("localFile---->>>>"+request.getParameter("localFile"));
+		System.out.println("localFile---->>>>"+filePath);
 		File file = new File(filePath);// "../logs/SpringMVC.log"
 		String dfileName = file.getName();
 		System.out.println(dfileName);
-//		dfileName=URLEncoder.encode(dfileName, "UTF-8");
-		dfileName = new String(dfileName.getBytes("utf-8"),"iso-8859-1");
+		dfileName=URLEncoder.encode(dfileName, "UTF-8");
+		if (request.getHeader("User-Agent").toLowerCase()  
+	               .indexOf("firefox") > 0) {  
+			dfileName = new String(dfileName.getBytes("utf-8"), "ISO8859-1"); // firefox浏览器  
+	        } else if (request.getHeader("User-Agent").toUpperCase()  
+	                .indexOf("MSIE") > 0) {  
+	        	dfileName = URLEncoder.encode(dfileName, "UTF-8");// IE浏览器  
+//				dfileName = new String(dfileName.getBytes("utf-8"), "ISO8859-1"); // firefox浏览器  
+	       }else if (request.getHeader("User-Agent").toUpperCase()  
+	                .indexOf("CHROME") > 0) {  
+	    	   dfileName = new String(dfileName.getBytes("utf-8"), "ISO8859-1");// 谷歌  
+	        } 
+
+//		dfileName = new String(dfileName.getBytes("utf-8"),"iso-8859-1");
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		headers.setContentDispositionFormData("attachment", dfileName);
-		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.CREATED);
+		return new ResponseEntity<byte[]>(FileUtils.readFileToByteArray(file), headers, HttpStatus.OK);
 	}
 
 	/**

@@ -36,7 +36,7 @@ public abstract class ATask {
 	public void SendSuccess() {
 		result = new Receipt().SendReceipt(workOrder.getWorkjob_id(), "成功", "");
 		updateWorkOrder.setJdbcTemplate(jdbcTemplate);
-		if (result.equals("0"))
+		if (result!=null&&result.equals("0"))
 			updateWorkOrder.Update("处理完成", 1, "", workOrder.getWorkjob_id());
 		else
 			updateWorkOrder.Update("回单失败", 2, result, workOrder.getWorkjob_id());
