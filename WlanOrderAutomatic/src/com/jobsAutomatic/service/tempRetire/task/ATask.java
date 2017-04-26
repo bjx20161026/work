@@ -46,6 +46,9 @@ public abstract class ATask {
 		updateWorkOrder.setJdbcTemplate(jdbcTemplate);
 		updateWorkOrder.Update("校验失败", 2, failReason, workOrder.getWorkjob_id());
 	}
+	public void NotSend(String failReason){
+		updateWorkOrder.Update("入库失败", 2, failReason, workOrder.getWorkjob_id());
+	}
 	public void CheckSuccess(){
 		
 	}

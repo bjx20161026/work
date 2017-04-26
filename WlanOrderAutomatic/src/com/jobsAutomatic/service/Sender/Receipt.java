@@ -40,10 +40,19 @@ public class Receipt {
 		try {
 			return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP",docXmlText);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			try {
+				return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP",docXmlText);
+			}catch (Exception e1) {
+				try {
+					return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP",docXmlText);
+				} catch (Exception e2) {
+					// TODO Auto-generated catch block
+					e2.printStackTrace();
+					return e2.getMessage();
+				}
+			}
 		}
-		return docXmlText;
 	}
 	public static void main(String[] args) {
 		try {

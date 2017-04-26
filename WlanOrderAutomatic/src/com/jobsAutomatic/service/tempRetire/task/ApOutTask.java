@@ -22,6 +22,7 @@ public class ApOutTask extends ATask {
 			SendSuccess();
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			NotSend(e.getMessage());
 			e.printStackTrace();
 		}
 	}

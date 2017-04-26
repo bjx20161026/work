@@ -20,11 +20,20 @@ public class ApImportTask extends ATask {
 			String filePath = workOrder.getLocalfile();
 			ImportMsg importMsg = new ImportMsg();
 			List<ApImportDto> apImportDtos = new ReadAp().readXlsx(filePath, importMsg, 1);
+			if(importMsg.getFailureCount() != 0){
+				logger.error("importMsg.getMessage() -->" + importMsg.getMessage());
+				Sendfailure(importMsg.getMessage());
+				return;
+			}
 			ApDataImport apDataImport = new ApDataImport();
 			apDataImport.setJdbcTemplate(jdbcTemplate);
 			apDataImport.saveImportData(apImportDtos, importMsg);
+			if(importMsg.getFailureCount() != 0){
+				logger.error("importMsg.getMessage() -->" + importMsg.getMessage());
+				NotSend(importMsg.getMessage());
+				return;
+			}
 			String include = "";
-			if(importMsg.getFailureCount()==0) {
 			for (ApImportDto apImportDto : apImportDtos) {
 				include += apImportDto.getMacAddr() + ",";
 			}
@@ -33,13 +42,10 @@ public class ApImportTask extends ATask {
 					workOrder.getWorkjob_id());
 			new ApApplyNetService().ApplyNetService(workOrder.getWorkjob_id());
 			new ApReviewNetService().ReviewNetService(workOrder.getWorkjob_id());
-		    SendSuccess();}
-			else {
-				logger.error(importMsg.getMessage());
-				Sendfailure(importMsg.getMessage());
-			}			
+		    SendSuccess(); 			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
+			NotSend(e.getMessage());
 			e.printStackTrace();
 		}
 	}

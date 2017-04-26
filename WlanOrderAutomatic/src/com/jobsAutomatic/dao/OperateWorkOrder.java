@@ -2,9 +2,12 @@ package com.jobsAutomatic.dao;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Repository;
 
 import com.jobsAutomatic.service.modle.QueryCondition;
@@ -16,11 +19,28 @@ import com.jobsAutomatic.service.util.Util;
 
 @Repository
 public class OperateWorkOrder extends DaoSupport {
+	
+	public OperateWorkOrder(){
+		DriverManagerDataSource dataSource=new DriverManagerDataSource();
+		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
+		dataSource.setUrl("jdbc:oracle:thin:@10.221.18.39:1521:ipnet");
+		dataSource.setUsername("res");
+		dataSource.setPassword("SHres!23$");
+		JdbcTemplate jdbcTemplate=new JdbcTemplate(dataSource);
+		this.jdbcTemplate = jdbcTemplate;
+	}
 
 	public int Update(String statement, int issucced, String failed_reason, String workjob_id) {
 		int i = jdbcTemplate.update(
 				"update work_order set  statement= ?,issucced = ?,operatetime = sysdate,failed_reason = ? where workjob_id = ?",
 				statement, issucced, failed_reason, workjob_id);
+		return i;
+	}
+	
+	public int Update(String statement, int issucced, String failed_reason, String workjob_id,String user) {
+		int i = jdbcTemplate.update(
+				"update work_order set  statement= ?,issucced = ?,operatetime = sysdate,failed_reason = ?,order_user = ? where workjob_id = ?",
+				statement, issucced, failed_reason,user, workjob_id);
 		return i;
 	}
 	
@@ -37,7 +57,69 @@ public class OperateWorkOrder extends DaoSupport {
 		List<WorkOrder> workOrders = jdbcTemplate.query("Select * from work_order", rowMapper);
 		return workOrders;
 	}
-
+	public void RecordOperate(List<WorkOrder> workOrders){
+		for(WorkOrder workOrder:workOrders){
+		jdbcTemplate.update(
+					"update work_order set  ORDER_USER= ?,operatetime = sysdate where workjob_id = ?",
+					workOrder.getUser(),workOrder.getWorkjob_id());
+		jdbcTemplate.update(
+				"insert into wlan_opreate_log(oprate_time,opreator,oprate_detail)values(sysdate,?,?)",
+				workOrder.getUser(),"处理工单");
+		}
+	}
+	public void RecordOperate(String user,String workjob_id,String detail){
+		jdbcTemplate.update(
+					"update work_order set  ORDER_USER= ?,operatetime = sysdate where workjob_id = ?",
+					user,workjob_id);
+		jdbcTemplate.update(
+				"insert into wlan_opreate_log(oprate_time,opreator,oprate_detail)values(sysdate,?,?)",
+				user,"手动回单:"+detail);
+	}
+	
+	public List<Map<String,Object>> getAllOrderByCondition(QueryCondition queryCondition){
+		String workjob_id,workjob_type,statement,send_time,finishtime;
+		Util util = new Util();
+		List<UpdateSql> list = new ArrayList<UpdateSql>();
+		try{
+			workjob_id=queryCondition.getWorkjob_id();
+		}catch(NullPointerException e){
+			workjob_id = null;
+		}
+		try{
+			workjob_type=queryCondition.getWorkjob_type();
+		}catch(NullPointerException e){
+			workjob_type = null;
+		}
+		try{
+			statement=queryCondition.getStatement();
+		}catch(NullPointerException e){
+			statement = null;
+		}
+		try{
+			send_time=queryCondition.getSend_time();
+		}catch(NullPointerException e){
+			send_time = null;
+		}
+		try{
+			finishtime=queryCondition.getFinishtime();
+		}catch(NullPointerException e){
+			finishtime = null;
+		}
+		if(workjob_type!=null&&workjob_type.equals("非临时退服")) list.add(util.getUpdateSql("workjob_type", "临时退服", "NOTLIKE"));
+		else list.add(util.getUpdateSql("workjob_type", workjob_type, "VARCHAR"));
+		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
+		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
+		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
+		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
+		String sql = util.getWhere("", list);
+		System.out.println("sql:"+sql);
+		if(!sql.equals("")) sql = "Select * from work_order where "+sql;
+		else sql = "Select * from work_order";
+				return jdbcTemplate.queryForList(sql);
+	}
+	
+	
+	
 	public ReplyWorkOrder getOrderByCondition(QueryCondition queryCondition) {
 		String workjob_id,workjob_type,statement,send_time,finishtime;
 		Util util = new Util();
@@ -86,7 +168,8 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
 		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
-		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
+		if(statement.equals("处理完成")) list.add(util.getUpdateSql("statement", "处理完成' or statement = '处理中", "VARCHAR"));
+		else list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
 		System.out.println("sql:"+sql);
 		String sql2="";
