@@ -1,2 +1,17 @@
-2017-04-19 10:44:06  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
-2017-04-19 10:44:07  [ main:865 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 15:52:15  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 15:52:15  [ main:30 ] - [ ERROR ]  null
+2017-04-27 15:52:15  [ main:30 ] - [ ERROR ]  null
+2017-04-27 15:55:07  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 15:55:07  [ main:12 ] - [ ERROR ]  null
+2017-04-27 15:55:07  [ main:13 ] - [ ERROR ]  null
+2017-04-27 15:57:33  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 15:57:33  [ main:11 ] - [ ERROR ]  null
+2017-04-27 15:57:33  [ main:11 ] - [ ERROR ]  null
+2017-04-27 15:57:40  [ main:6457 ] - [ INFO ]  Loading XML bean definitions from class path resource [org/springframework/jdbc/support/sql-error-codes.xml]
+2017-04-27 15:57:40  [ main:6720 ] - [ INFO ]  SQLErrorCodes loaded: [DB2, Derby, H2, HSQL, Informix, MS-SQL, MySQL, Oracle, PostgreSQL, Sybase]
+2017-04-27 16:11:31  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 16:11:31  [ main:12 ] - [ ERROR ]  null
+2017-04-27 16:11:31  [ main:12 ] - [ ERROR ]  null
+2017-04-27 16:12:35  [ main:0 ] - [ INFO ]  Loaded JDBC driver: oracle.jdbc.driver.OracleDriver
+2017-04-27 16:12:35  [ main:12 ] - [ ERROR ]  null
+2017-04-27 16:12:35  [ main:12 ] - [ ERROR ]  null

@@ -61,10 +61,10 @@ public class OperateWorkOrder extends DaoSupport {
 		for(WorkOrder workOrder:workOrders){
 		jdbcTemplate.update(
 					"update work_order set  ORDER_USER= ?,operatetime = sysdate where workjob_id = ?",
-					workOrder.getUser(),workOrder.getWorkjob_id());
+					workOrder.getOrder_user(),workOrder.getWorkjob_id());
 		jdbcTemplate.update(
 				"insert into wlan_opreate_log(oprate_time,opreator,oprate_detail)values(sysdate,?,?)",
-				workOrder.getUser(),"处理工单");
+				workOrder.getOrder_user(),"处理工单");
 		}
 	}
 	public void RecordOperate(String user,String workjob_id,String detail){
@@ -168,17 +168,26 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
 		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
-		if(statement.equals("处理完成")) list.add(util.getUpdateSql("statement", "处理完成' or statement = '处理中", "VARCHAR"));
-		else list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
+		if(!statement.equals("处理完成")) list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
 		System.out.println("sql:"+sql);
 		String sql2="";
-		if(!sql.equals("")) sql2 = "Select count(*) from work_order where "+sql;
-		else sql2 = "Select count(*) from work_order";
+		if(statement.equals("处理完成"))
+			if(!sql.equals("")) sql2 = "select count(*) from (select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成' ) where "+sql;
+			else sql2 = "select count(*) from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成'";
+		else
+			if(!sql.equals("")) sql2 = "Select count(*) from work_order where "+sql;
+			else sql2 = "Select count(*) from work_order";
 		@SuppressWarnings("deprecation")
 		int totalSize = jdbcTemplate.queryForInt(sql2);
-		if(!sql.equals("")) sql = "Select * from work_order where "+sql;
-		else sql = "Select * from work_order";
+		if(statement.equals("处理完成"))
+			if(!sql.equals("")) sql = "select * from (select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成' ) where "+sql;
+			else sql = "select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成'";
+		else
+			if(!sql.equals("")) sql = "Select * from work_order where "+sql;
+			else sql = "Select * from work_order";
+		System.out.println("sql2------>>>>>>"+sql2);
+		System.out.println("sql------>>>>>>"+sql);
 		RowMapper<WorkOrder> rowMapper = new BeanPropertyRowMapper<WorkOrder>(WorkOrder.class);
 		List<WorkOrder> workOrders = jdbcTemplate.query("SELECT * FROM (SELECT temp.* ,ROWNUM num FROM ( "+sql+" ) temp where ROWNUM <= ? ) WHERE　num > ?", rowMapper,last,start);
 		

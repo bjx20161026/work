@@ -8,12 +8,13 @@ public class QueryCondition {
 	private String finishtime;
 	private String start;
 	private String limit;
-	private String user;
-	public String getUser() {
-		return user;
+	private String order_user;
+	
+	public String getOrder_user() {
+		return order_user;
 	}
-	public void setUser(String user) {
-		this.user = user;
+	public void setOrder_user(String order_user) {
+		this.order_user = order_user;
 	}
 	public String getStart() {
 		return start;
@@ -59,13 +60,13 @@ public class QueryCondition {
 	}
 	@Override
 	public String toString(){
-		return "workjob_id:"+workjob_id+"  workjob_type:"+workjob_type+"  statement:"+statement+" send_time:"+send_time+"  finishtime:"+finishtime+"  start:"+start+"  limit:"+limit+"  user:"+user;
+		return "workjob_id:"+workjob_id+"  workjob_type:"+workjob_type+"  statement:"+statement+" send_time:"+send_time+"  finishtime:"+finishtime+"  start:"+start+"  limit:"+limit+"  order_user:"+order_user;
 	}
 	
 	public static void main(String[] args){
 		QueryCondition queryCondition = new QueryCondition();
 		queryCondition.setWorkjob_id("12345");
-		queryCondition.setUser("system");
+		queryCondition.setOrder_user("system");
 		System.out.println(queryCondition.toString());
 	}
 }

@@ -26,15 +26,13 @@ public class WorkOrder {
 	private Date finishtime;
 	private Date operatetime;
 	private String failed_reason;
-	private String user;
+	private String order_user;
 	
-	
-
-	public String getUser() {
-		return user;
+	public String getOrder_user() {
+		return order_user;
 	}
-	public void setUser(String user) {
-		this.user = user;
+	public void setOrder_user(String order_user) {
+		this.order_user = order_user;
 	}
 	@JsonSerialize(using = CustomDateSerializer.class)
 	public Date getFinishtime() {

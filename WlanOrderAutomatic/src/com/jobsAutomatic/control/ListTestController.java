@@ -69,27 +69,15 @@ public class ListTestController {
 		System.out.println("Request-->>"+Request.toString());
 		QueryCondition queryCondition = new QueryCondition();
 		queryCondition.setWorkjob_id(Request.getParameter("workjob_id"));
-		try {
-			queryCondition.setWorkjob_type(new String(Request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8"));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			queryCondition.setWorkjob_type(null);
-		}
-		try {
-			queryCondition.setUser(new String(Request.getParameter("user").getBytes("iso-8859-1"),"utf-8"));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			queryCondition.setWorkjob_type(null);
-		}
+		queryCondition.setWorkjob_type(Request.getParameter("workjob_type"));
+		queryCondition.setOrder_user(Request.getParameter("order_user"));
 		queryCondition.setSend_time(Request.getParameter("send_time"));
 		queryCondition.setFinishtime(Request.getParameter("finishtime"));
 		queryCondition.setStatement(Request.getParameter("statement"));
-		queryCondition.setWorkjob_id(Request.getParameter("workjob_id"));
-//		queryCondition.setWorkjob_type(Request.getParameter("workjob_type"));
 		queryCondition.setLimit(Request.getParameter("limit"));
 		queryCondition.setStart(Request.getParameter("start"));
 		logger.info("获取工单列表  --->>>"+queryCondition.toString());
-		operateWlanOpreateLog.Update(queryCondition.getUser(), "获取工单列表");
+		operateWlanOpreateLog.Update(queryCondition.getOrder_user(), "获取工单列表");
 		return operateWorkOrder.getOrderByCondition(queryCondition);
 	}
 	@RequestMapping(value = "/getCountByCondition", method = RequestMethod.POST)
@@ -111,9 +99,10 @@ public class ListTestController {
 	public @ResponseBody String Receipt(HttpServletRequest  request) throws Exception {
 		String workjob_id = new String(request.getParameter("workjob_id").getBytes("iso-8859-1"),"utf-8");
 		String makeResult = new String(request.getParameter("makeResult").getBytes("iso-8859-1"),"utf-8");
-		String failReason = new String(request.getParameter("failReason").getBytes("iso-8859-1"),"utf-8");
-		String user = new String(request.getParameter("user").getBytes("iso-8859-1"),"utf-8");
-		operateWorkOrder.RecordOperate(user,workjob_id,"制作结果："+makeResult+" 原因："+failReason);
+		String failReason = request.getParameter("failReason")==null?"":request.getParameter("failReason");
+	    failReason = new String(failReason.getBytes("iso-8859-1"),"utf-8");
+		String order_user = new String(request.getParameter("order_user").getBytes("iso-8859-1"),"utf-8");
+		operateWorkOrder.RecordOperate(order_user,workjob_id,"制作结果："+makeResult+" 原因："+failReason);
 		Receipt receipt = new Receipt();
 		String result = receipt.SendReceipt(workjob_id, makeResult, failReason);
 			if (result!=null&&result.equals("0")){
@@ -130,7 +119,7 @@ public class ListTestController {
 	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
 		String filePath = new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8");
-		System.out.println("localFile---->>>>"+filePath);
+		logger.info("localFile---->>>>"+filePath);
 		File file = new File(filePath);// "../logs/SpringMVC.log"
 		String dfileName = file.getName();
 		System.out.println(dfileName);
@@ -155,21 +144,12 @@ public class ListTestController {
 		String[] heads = {"workjob_id","title","worker","department","send_time","handle_time","hotspotname","shield_start","shield_end","location","area","ftp","statement","issucced","workjob_type","nasid","finishtime","receipt","include","operatetime","localfile","failed_reason","order_user"};
 		QueryCondition queryCondition = new QueryCondition();
 		queryCondition.setWorkjob_id(request.getParameter("workjob_id"));
-		try {
-			queryCondition.setWorkjob_type(new String(request.getParameter("localFile").getBytes("iso-8859-1"),"utf-8"));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			queryCondition.setWorkjob_type(null);
-		}
-		try {
-			queryCondition.setStatement(new String(request.getParameter("statement").getBytes("iso-8859-1"),"utf-8"));
-		} catch (Exception e) {
-			System.out.println(e.getMessage());
-			queryCondition.setStatement(null);
-		}
+		queryCondition.setWorkjob_type(request.getParameter("workjob_type"));
+		queryCondition.setOrder_user(request.getParameter("order_user"));
 		queryCondition.setSend_time(request.getParameter("send_time"));
 		queryCondition.setFinishtime(request.getParameter("finishtime"));
-		queryCondition.setWorkjob_id(request.getParameter("workjob_id"));
+		queryCondition.setStatement(request.getParameter("statement"));
+		logger.info("获取工单列表  --->>>"+queryCondition.toString());
 		CreatorFile creatorFile = new CreatorFile();
 		byte[] bytes = creatorFile.Creator(heads, operateWorkOrder.getAllOrderByCondition(queryCondition), request.getParameter("exportType"));
 		logger.info("文件名："+new String(request.getParameter("title").getBytes("iso-8859-1"),"utf-8"));
