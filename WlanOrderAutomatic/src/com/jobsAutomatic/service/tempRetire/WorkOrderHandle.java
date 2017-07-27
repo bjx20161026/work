@@ -23,7 +23,7 @@ public class WorkOrderHandle implements Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("开始处理文件");
+		logger.info("开始处理工单文件...");
 		try {
 			RowMapper<OrdrWithFile> rowMapper = new BeanPropertyRowMapper<OrdrWithFile>(OrdrWithFile.class);
 			List<OrdrWithFile> ordrWithFiles = jdbcTemplate
@@ -39,7 +39,7 @@ public class WorkOrderHandle implements Runnable {
 			logger.error(e.getMessage());
 			e.printStackTrace();
 		}
-		System.out.println("开始处理待临时退服工单");
+		logger.info("开始处理待临时退服工单...");
 		try {
 			RowMapper<WorkOrder> rowMapper = new BeanPropertyRowMapper<WorkOrder>(WorkOrder.class);
 			List<WorkOrder> workOrders = jdbcTemplate

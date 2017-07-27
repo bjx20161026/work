@@ -36,7 +36,8 @@ public class Device extends Entity {
      *
      * @deprecated
      */
-    private String VENDOR;
+    @Deprecated
+	private String VENDOR;
     /**
      * ��������
      */

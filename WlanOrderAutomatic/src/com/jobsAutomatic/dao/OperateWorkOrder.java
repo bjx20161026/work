@@ -15,12 +15,14 @@ import com.jobsAutomatic.service.modle.ReplyWorkOrder;
 import com.jobsAutomatic.service.modle.UpdateSql;
 import com.jobsAutomatic.service.modle.WorkJob;
 import com.jobsAutomatic.service.modle.WorkOrder;
+import com.jobsAutomatic.service.util.Sms;
 import com.jobsAutomatic.service.util.Util;
 
 @Repository
 public class OperateWorkOrder extends DaoSupport {
 	
 	public OperateWorkOrder(){
+		try{
 		DriverManagerDataSource dataSource=new DriverManagerDataSource();
 		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
 		dataSource.setUrl("jdbc:oracle:thin:@10.221.18.39:1521:ipnet");
@@ -28,6 +30,16 @@ public class OperateWorkOrder extends DaoSupport {
 		dataSource.setPassword("SHres!23$");
 		JdbcTemplate jdbcTemplate=new JdbcTemplate(dataSource);
 		this.jdbcTemplate = jdbcTemplate;
+		}catch(Exception e){
+			Sms sms = new Sms();
+			try {
+				sms.SendMessage("数据库连接异常 ："+e.getMessage());
+			} catch (Exception e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				logger.error(e1);
+			}	
+		}
 	}
 
 	public int Update(String statement, int issucced, String failed_reason, String workjob_id) {
@@ -36,6 +48,13 @@ public class OperateWorkOrder extends DaoSupport {
 				statement, issucced, failed_reason, workjob_id);
 		return i;
 	}
+	
+	public int Insert(String statement, int issucced, String failed_reason, String workjob_id){
+		int i = jdbcTemplate.update("insert into work_order(statement,issucced,operatetime,failed_reason,workjob_id)values(?,?,sysdate,?,?)",statement, issucced, failed_reason, workjob_id);
+		return i;
+	}
+	
+	
 	
 	public int Update(String statement, int issucced, String failed_reason, String workjob_id,String user) {
 		int i = jdbcTemplate.update(
@@ -110,11 +129,15 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
 		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
-		list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
+		if(statement==null||statement!=null&&!statement.equals("处理完成")) list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
 		System.out.println("sql:"+sql);
-		if(!sql.equals("")) sql = "Select * from work_order where "+sql;
-		else sql = "Select * from work_order";
+		if(statement!=null&&statement.equals("处理完成"))
+			if(!sql.equals("")) sql = "select * from (select * from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成' ) where "+sql;
+			else sql = "select * from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成'";
+		else
+			if(!sql.equals("")) sql = "Select * from work_order where "+sql;
+			else sql = "Select * from work_order";
 				return jdbcTemplate.queryForList(sql);
 	}
 	
@@ -168,21 +191,21 @@ public class OperateWorkOrder extends DaoSupport {
 		list.add(util.getUpdateSql("workjob_id", workjob_id, "LIKE"));
 		list.add(util.getUpdateSql("send_time", send_time, "DATE2"));
 		list.add(util.getUpdateSql("finishtime", finishtime, "DATE2"));
-		if(!statement.equals("处理完成")) list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
+		if(statement==null||statement!=null&&!statement.equals("处理完成")) list.add(util.getUpdateSql("statement", statement, "VARCHAR"));
 		String sql = util.getWhere("", list);
 		System.out.println("sql:"+sql);
 		String sql2="";
-		if(statement.equals("处理完成"))
-			if(!sql.equals("")) sql2 = "select count(*) from (select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成' ) where "+sql;
-			else sql2 = "select count(*) from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成'";
+		if(statement!=null&&statement.equals("处理完成"))
+			if(!sql.equals("")) sql2 = "select count(*) from (select * from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成' ) where "+sql;
+			else sql2 = "select count(*) from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成'";
 		else
 			if(!sql.equals("")) sql2 = "Select count(*) from work_order where "+sql;
 			else sql2 = "Select count(*) from work_order";
 		@SuppressWarnings("deprecation")
 		int totalSize = jdbcTemplate.queryForInt(sql2);
-		if(statement.equals("处理完成"))
-			if(!sql.equals("")) sql = "select * from (select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成' ) where "+sql;
-			else sql = "select * from work_order where STATEMENT = '待处理' or STATEMENT = '处理完成'";
+		if(statement!=null&&statement.equals("处理完成"))
+			if(!sql.equals("")) sql = "select * from (select * from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成' ) where "+sql;
+			else sql = "select * from work_order where STATEMENT = '处理中' or STATEMENT = '处理完成'";
 		else
 			if(!sql.equals("")) sql = "Select * from work_order where "+sql;
 			else sql = "Select * from work_order";

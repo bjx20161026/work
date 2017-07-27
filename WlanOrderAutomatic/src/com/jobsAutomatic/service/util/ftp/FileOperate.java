@@ -34,6 +34,25 @@ public class FileOperate {
 		get(url.substring(url.lastIndexOf("/") + 1), new FileOutputStream(filePath));
 		return filePath;
 	}
+	
+	public static void main(String[] args){
+		FileOperate fo = new FileOperate("ftp://EOMS_PUT:W1n3m5s#@10.221.232.136:21/EOMS_APP/DATA.PM.WLAN_RW_TW_BG.EOMS_APP/SH-201-170706-00001_WLAN.xls");
+	    String a;
+		try {
+			a = fo.getDownloadFile();
+		    System.out.println(a);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
+	public void Makedirs(){
+		
+	}
+	
 
 	public void login() throws Exception {
 		FtpFileObject ffo = fileObject;
@@ -70,6 +89,8 @@ public class FileOperate {
 		ftpClient.setFileTransferMode(FTP.STREAM_TRANSFER_MODE);
 		ftpClient.setControlEncoding("utf-8");
 		ftpClient.retrieveFile(filename, os);
+		os.flush();
+		os.close();
 	}
 
 	public InputStream get(String filename) throws Exception {

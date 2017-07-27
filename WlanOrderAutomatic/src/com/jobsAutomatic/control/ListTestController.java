@@ -2,11 +2,11 @@ package com.jobsAutomatic.control;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,19 +44,19 @@ public class ListTestController {
 	Logger logger = Logger.getLogger(ListTestController.class);
 	@Resource
 	JdbcTemplate jdbcTemplate;
-	@Resource
-	JdbcTemplate jdbcTemplate2;
+//	@Resource
+//	JdbcTemplate jdbcTemplate2;
 	@Autowired
 	OperateWorkOrder operateWorkOrder;
 	@Autowired
 	OperateWlanOpreateLog operateWlanOpreateLog;
 
-	@RequestMapping(value = "/test2/{name}", method = RequestMethod.GET)
-	public @ResponseBody List<Map<String, Object>> ListTest2(@PathVariable String name) {
-		System.out.println("abc");
-		List<Map<String, Object>> list = jdbcTemplate2.queryForList("select * from prm_device@RES where rownum<3");
-		return list;
-	}
+//	@RequestMapping(value = "/test2/{name}", method = RequestMethod.GET)
+//	public @ResponseBody List<Map<String, Object>> ListTest2(@PathVariable String name) {
+//		System.out.println("abc");
+//		List<Map<String, Object>> list = jdbcTemplate2.queryForList("select * from prm_device@RES where rownum<3");
+//		return list;
+//	}
 
 	@RequestMapping(value = "/getAllOrder", method = RequestMethod.GET)
 	public @ResponseBody List<WorkOrder> getAllOrder() {
@@ -65,21 +64,22 @@ public class ListTestController {
 	}
 
 	@RequestMapping(value = "/getOrderByCondition", method = RequestMethod.GET)
-	public @ResponseBody ReplyWorkOrder getOrderByCondition(HttpServletRequest  Request) {
+	public @ResponseBody ReplyWorkOrder getOrderByCondition(HttpServletRequest  Request) throws Exception {
 		System.out.println("Request-->>"+Request.toString());
 		QueryCondition queryCondition = new QueryCondition();
-		queryCondition.setWorkjob_id(Request.getParameter("workjob_id"));
-		queryCondition.setWorkjob_type(Request.getParameter("workjob_type"));
-		queryCondition.setOrder_user(Request.getParameter("order_user"));
-		queryCondition.setSend_time(Request.getParameter("send_time"));
-		queryCondition.setFinishtime(Request.getParameter("finishtime"));
-		queryCondition.setStatement(Request.getParameter("statement"));
-		queryCondition.setLimit(Request.getParameter("limit"));
-		queryCondition.setStart(Request.getParameter("start"));
+		queryCondition.setWorkjob_id(Request.getParameter("workjob_id")==null?null:new String(Request.getParameter("workjob_id").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setWorkjob_type(Request.getParameter("workjob_type")==null?null:new String(Request.getParameter("workjob_type").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setOrder_user(Request.getParameter("order_user")==null?null:new String(Request.getParameter("order_user").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setSend_time(Request.getParameter("send_time")==null?null:new String(Request.getParameter("send_time").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setFinishtime(Request.getParameter("finishtime")==null?null:new String(Request.getParameter("finishtime").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setStatement(Request.getParameter("statement")==null?null:new String(Request.getParameter("statement").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setLimit(Request.getParameter("limit")==null?null:new String(Request.getParameter("limit").getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setStart(Request.getParameter("start")==null?null:new String(Request.getParameter("start").getBytes("iso-8859-1"),"utf-8"));
 		logger.info("获取工单列表  --->>>"+queryCondition.toString());
 		operateWlanOpreateLog.Update(queryCondition.getOrder_user(), "获取工单列表");
 		return operateWorkOrder.getOrderByCondition(queryCondition);
 	}
+	
 	@RequestMapping(value = "/getCountByCondition", method = RequestMethod.POST)
 	public @ResponseBody int getCountByCondition(@RequestBody String code) {
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
@@ -88,7 +88,7 @@ public class ListTestController {
 	}
 	@RequestMapping(value = "/handleOrders", method = RequestMethod.POST)
 	public @ResponseBody int handleOrders(@RequestBody String code) {
-		logger.error(code);
+		logger.info(code);
 		List<WorkOrder> workOrders = jsonToArrayList(code, WorkOrder.class);
 		operateWorkOrder.RecordOperate(workOrders);
 		OrderClassify orderClassify = new OrderClassify();
@@ -103,6 +103,7 @@ public class ListTestController {
 	    failReason = new String(failReason.getBytes("iso-8859-1"),"utf-8");
 		String order_user = new String(request.getParameter("order_user").getBytes("iso-8859-1"),"utf-8");
 		operateWorkOrder.RecordOperate(order_user,workjob_id,"制作结果："+makeResult+" 原因："+failReason);
+		logger.info("手动回单:"+"制作结果："+makeResult+" 原因："+failReason);
 		Receipt receipt = new Receipt();
 		String result = receipt.SendReceipt(workjob_id, makeResult, failReason);
 			if (result!=null&&result.equals("0")){
@@ -115,6 +116,7 @@ public class ListTestController {
 			}
 		return result;	
 	}
+	
 
 	@RequestMapping(value = "/download", produces = "application/octet-stream;charset=UTF-8", method = RequestMethod.GET)
 	public ResponseEntity<byte[]> download(HttpServletRequest  request) throws IOException {
@@ -143,13 +145,13 @@ public class ListTestController {
 	public ResponseEntity<byte[]> export(HttpServletRequest  request) throws IOException {
 		String[] heads = {"workjob_id","title","worker","department","send_time","handle_time","hotspotname","shield_start","shield_end","location","area","ftp","statement","issucced","workjob_type","nasid","finishtime","receipt","include","operatetime","localfile","failed_reason","order_user"};
 		QueryCondition queryCondition = new QueryCondition();
-		queryCondition.setWorkjob_id(request.getParameter("workjob_id"));
-		queryCondition.setWorkjob_type(request.getParameter("workjob_type"));
-		queryCondition.setOrder_user(request.getParameter("order_user"));
+		queryCondition.setWorkjob_id(new String((request.getParameter("workjob_id")==null?"":request.getParameter("workjob_id")).getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setWorkjob_type(new String((request.getParameter("workjob_type")==null?"":request.getParameter("workjob_type")).getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setOrder_user(new String((request.getParameter("order_user")==null?"":request.getParameter("order_user")).getBytes("iso-8859-1"),"utf-8"));
 		queryCondition.setSend_time(request.getParameter("send_time"));
 		queryCondition.setFinishtime(request.getParameter("finishtime"));
-		queryCondition.setStatement(request.getParameter("statement"));
-		logger.info("获取工单列表  --->>>"+queryCondition.toString());
+		queryCondition.setStatement(new String((request.getParameter("statement")==null?"":request.getParameter("statement")).getBytes("iso-8859-1"),"utf-8"));
+		logger.info("导出文件  --->>>"+queryCondition.toString());
 		CreatorFile creatorFile = new CreatorFile();
 		byte[] bytes = creatorFile.Creator(heads, operateWorkOrder.getAllOrderByCondition(queryCondition), request.getParameter("exportType"));
 		logger.info("文件名："+new String(request.getParameter("title").getBytes("iso-8859-1"),"utf-8"));
@@ -169,6 +171,22 @@ public class ListTestController {
 		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		headers.setContentDispositionFormData("attachment", dfileName);
 		return new ResponseEntity<byte[]>(bytes, headers, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/export2", method = RequestMethod.GET)
+	public @ResponseBody byte[] export2(HttpServletRequest  request) throws IOException {
+		String[] heads = {"workjob_id","title","worker","department","send_time","handle_time","hotspotname","shield_start","shield_end","location","area","ftp","statement","issucced","workjob_type","nasid","finishtime","receipt","include","operatetime","localfile","failed_reason","order_user"};
+		QueryCondition queryCondition = new QueryCondition();
+		queryCondition.setWorkjob_id(new String((request.getParameter("workjob_id")==null?"":request.getParameter("workjob_id")).getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setWorkjob_type(new String((request.getParameter("workjob_type")==null?"":request.getParameter("workjob_type")).getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setOrder_user(new String((request.getParameter("order_user")==null?"":request.getParameter("order_user")).getBytes("iso-8859-1"),"utf-8"));
+		queryCondition.setSend_time(request.getParameter("send_time"));
+		queryCondition.setFinishtime(request.getParameter("finishtime"));
+		queryCondition.setStatement(new String((request.getParameter("statement")==null?"":request.getParameter("statement")).getBytes("iso-8859-1"),"utf-8"));
+		logger.info("导出文件  --->>>"+queryCondition.toString());
+		CreatorFile creatorFile = new CreatorFile();
+		byte[] bytes = creatorFile.Creator(heads, operateWorkOrder.getAllOrderByCondition(queryCondition), request.getParameter("exportType"));
+		return bytes;
 	}
 	
 	/**

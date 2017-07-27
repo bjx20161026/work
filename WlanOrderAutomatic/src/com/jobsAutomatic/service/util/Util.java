@@ -47,7 +47,7 @@ public class Util {
 
 	public String getWhere(String sql, List<UpdateSql> list) {
 		for (UpdateSql us : list) {
-			if (us.getValue() != null) {
+			if (us.getValue() != null&&!us.getValue().equals("")) {
 				if (us.getVar().equals("VARCHAR")) {
 					sql += us.getColumnName() + "='" + us.getValue() + "' and ";
 				} else if (us.getVar().equals("DECIMAL")) {

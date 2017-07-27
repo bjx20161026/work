@@ -11,5 +11,4 @@ public class Test {
 		OperateWorkOrder operateWorkOrder = new OperateWorkOrder();
 		operateWorkOrder.getOrderByCondition(queryCondition);
 	}
-
 }
