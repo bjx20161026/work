@@ -38,24 +38,13 @@ public class Receipt {
 		es.setEsbOperation("replyWorkSheet");
 		es.setEsbSystemCode("WLAN_APP");
 		try {
-			return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP", docXmlText);
+			return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP",docXmlText);
 		} catch (Exception e) {
-			try {
-				Thread.sleep(10000);
-				return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP", docXmlText);
-			} catch (Exception e1) {
-				try {
-					Thread.sleep(10000);
-					return (String) es.send("DATA.STATIC.ORDER.WLAN_FK.EOMS_APP", docXmlText);
-				} catch (Exception e2) {
-					// TODO Auto-generated catch block
-					e2.printStackTrace();
-					return e2.getMessage();
-				}
-			}
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+		return docXmlText;
 	}
-
 	public static void main(String[] args) {
 		try {
 			System.out.println(new Receipt().SendReceipt("SH-206-170109-00002", "失败", "测试"));

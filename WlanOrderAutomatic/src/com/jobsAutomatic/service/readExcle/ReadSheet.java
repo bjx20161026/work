@@ -10,8 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DateUtil;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -51,7 +49,6 @@ public class ReadSheet {
 		XSSFSheet xssfSheet = xssfWorkbook.getSheetAt(i);
 		return xssfSheet.getSheetName();
 	}
-
 
 	protected List<HotspotImportDto> setHotSpot(XSSFWorkbook xssfWorkbook, ImportMsg importMsg) {
 		String[] districts = { "宝山", "长宁", "崇明", "奉贤", "虹口", "黄浦", "嘉定", "金山", "静安", "卢湾", "南汇", "普陀", "浦东新区", "青浦",
@@ -421,11 +418,11 @@ public class ReadSheet {
 					dto.setLaCid(getValue(xssfRow.getCell(j)));// 位置区编码
 					break;
 				case 36:
-					if (StringUtils.isBlank(getValue(xssfRow.getCell(j)))) {
-						importMsg.appendMessage("第" + i + "行" + j + "列工单号不能为空");
-						isContinue = false;
-						break;
-					}
+//					if (StringUtils.isBlank(getValue(xssfRow.getCell(j)))) {
+//						importMsg.appendMessage("第" + i + "行" + j + "列工单号不能为空");
+//						isContinue = false;
+//						break;
+//					}
 					dto.setWorkOrderId(getValue(xssfRow.getCell(j)));// 工单号
 					break;
 				case 37:
@@ -467,11 +464,11 @@ public class ReadSheet {
 					dto.setWorkOrderType(type);// 工单类型
 					break;
 				case 39:
-					if (StringUtils.isBlank(getValue(xssfRow.getCell(j)))) {
-						importMsg.appendMessage("第" + i + "行" + j + "列操作人不能为空");
-						isContinue = false;
-						break;
-					}
+//					if (StringUtils.isBlank(getValue(xssfRow.getCell(j)))) {
+//						importMsg.appendMessage("第" + i + "行" + j + "列操作人不能为空");
+//						isContinue = false;
+//						break;
+//					}
 					dto.setOperator(getValue(xssfRow.getCell(j)));// 操作人
 					break;
 				case 40:
@@ -965,9 +962,9 @@ public class ReadSheet {
 	@SuppressWarnings({ "static-access", "deprecation" })
 	protected String getValue(XSSFCell xssfRow) {
 		try {
-			if (xssfRow.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+			if (xssfRow.getCellType() == xssfRow.CELL_TYPE_BOOLEAN) {
 				return String.valueOf(xssfRow.getBooleanCellValue());
-			} else if (xssfRow.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+			} else if (xssfRow.getCellType() == xssfRow.CELL_TYPE_NUMERIC) {
 				if (DateUtil.isCellDateFormatted(xssfRow)) {
 					return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
 							.format(DateUtil.getJavaDate(xssfRow.getNumericCellValue()));
@@ -985,9 +982,9 @@ public class ReadSheet {
 
 	@SuppressWarnings({ "static-access", "deprecation" })
 	protected String getValue(HSSFCell hssfCell) {
-		if (hssfCell.getCellType() == Cell.CELL_TYPE_BOOLEAN) {
+		if (hssfCell.getCellType() == hssfCell.CELL_TYPE_BOOLEAN) {
 			return String.valueOf(hssfCell.getBooleanCellValue());
-		} else if (hssfCell.getCellType() == Cell.CELL_TYPE_NUMERIC) {
+		} else if (hssfCell.getCellType() == hssfCell.CELL_TYPE_NUMERIC) {
 			DecimalFormat df = new DecimalFormat("0");
 			return String.valueOf(df.format(hssfCell.getNumericCellValue()));
 		} else {

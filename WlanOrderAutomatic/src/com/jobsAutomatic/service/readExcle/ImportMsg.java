@@ -67,18 +67,18 @@ public class ImportMsg {
 	}
 	public String getImportMsg() {
 		StringBuilder sb = new StringBuilder("本次导入共耗时" + getElapsedTime()
-				+ ";");
-		sb.append("成功导入" + getSuccessfulCount() + "条");
-		sb.append("失败" + getFailureCount() + "条");
+				+ "</br>");
+		sb.append("成功导入" + getSuccessfulCount() + "条</br>");
+		sb.append("失败" + getFailureCount() + "条</br>");
 		if (getMessage() != null)
-			sb.append("导入失败详细日志："+getMessage());
+			sb.append("导入失败详细日志：</br>"+getMessage());
 		return sb.toString();
 	}
 	public void appendMessage(String message) {
 		if (getMessage() == null)
-			setMessage(message + ";");
+			setMessage(message + "</br>");
 		else
-			setMessage(getMessage() + message + ";");
+			setMessage(getMessage() + message + "</br>");
 	}
 
 	public String getStatus() {

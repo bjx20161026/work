@@ -8,8 +8,6 @@
 //import java.util.Properties;
 //
 //import org.apache.commons.lang.StringUtils;
-//import org.springframework.jdbc.core.JdbcTemplate;
-//import org.springframework.jdbc.datasource.DriverManagerDataSource;
 //
 //import com.jobsAutomatic.dao.WlanDaoImpl;
 //import com.jobsAutomatic.service.modle.PingListParam;
@@ -21,7 +19,7 @@
 //
 //public class PingListConfigAction {
 //	
-//	public void addSwitchPingListTaskBySwitchIds(String switchIds){
+//	public void addSwitchPingListTaskBySwitchIds(Object[] switchIds){
 //		PingListParam param = new PingListParam();
 //		Properties pro=new Properties();
 //		InputStream is=this.getClass().getClassLoader().getResourceAsStream("pingSwitchListParameter.properties");
@@ -30,17 +28,17 @@
 //		} catch (IOException e) {
 //			e.printStackTrace();
 //		}
-//		param.setParam_id(pro.getProperty("ping.switch.param_id"));
+//		param.setParam_id((String) pro.get("ping.switch.param_id"));
 //		param.setParam_name((String) pro.get("ping.switch.param_name"));
 //		param.setPacket_count(Integer.parseInt((String) pro.get("ping.switch.packet_count")));
 //		param.setPacket_size(Integer.parseInt((String) pro.get("ping.switch.packet_size")));
 //		param.setTimeout(Integer.parseInt((String) pro.get("ping.switch.timeout")));
 //		param.setFrequency(Integer.parseInt((String) pro.get("ping.switch.frequency")));
-////		param.setRetry_times(Integer.getInteger((String) pro.get("ping.switch.retry_times")));
+//		param.setRetry_times(Integer.getInteger((String) pro.get("ping.switch.retry_times")));
 //		PingListConfigAction configAction = new PingListConfigAction();
-//		List<RMDevice> deviceList = configAction.getRMDeviceByIP(switchIds/*StringUtils.join(switchIds, ",")*/);
+//		List<RMDevice> deviceList = configAction.getRMDeviceByIP(StringUtils.join(switchIds, ","));
 //		int validIPs = configAction.importTasks(param, deviceList);//失败
-//		int invalidIPs = /*switchIds.length*/1 - validIPs;//成功 
+//		int invalidIPs = switchIds.length - validIPs;//成功 
 //		String msg = "导入IP:"+invalidIPs+"条<br>丢弃IP:"+validIPs+"条";
 //		System.out.println(msg);
 //	}
@@ -50,12 +48,6 @@
 //	public List<RMDevice> getRMDeviceByIP(String ips){
 //		List<RMDevice> deviceList = new ArrayList<RMDevice>();
 //		WlanDaoImpl wlanDaoImpl = new WlanDaoImpl();
-//		DriverManagerDataSource dataSource=new DriverManagerDataSource();
-//		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-//		dataSource.setUrl("jdbc:oracle:thin:@10.221.18.36:1521:ipnet");
-//		dataSource.setUsername("rm");
-//		dataSource.setPassword("SHrm!23$");
-//	    wlanDaoImpl.setJdbcTemplate2(new JdbcTemplate(dataSource));
 //		String[] ipArr = ips.split(",");
 //		for(int i=0;i<ipArr.length;i++){
 //			String ip = ipArr[i];
@@ -73,12 +65,6 @@
 //		int validTasks = 0;
 //		int failtcount =0;
 //		WlanDaoImpl wlanDaoImpl = new WlanDaoImpl();
-//		DriverManagerDataSource dataSource=new DriverManagerDataSource();
-//		dataSource.setDriverClassName("oracle.jdbc.driver.OracleDriver");
-//		dataSource.setUrl("jdbc:oracle:thin:@10.221.18.36:1521:ipnet");
-//		dataSource.setUsername("rm");
-//		dataSource.setPassword("SHrm!23$");
-//	    wlanDaoImpl.setJdbcTemplate2(new JdbcTemplate(dataSource));
 //		String url = wlanDaoImpl.getFPTaskMgrInf();
 //		FPTaskMgrInf tm = null;
 //		try {
@@ -124,9 +110,10 @@
 //		return failtcount;
 //	}
 //	public static void main(String[] args){
-//		PingListConfigAction pingListConfigAction = new PingListConfigAction();
+////		PingListConfigAction pingListConfigAction = new PingListConfigAction();
 ////		pingListConfigAction.addSwitchPingListTaskBySwitchIds();
-//		pingListConfigAction.addSwitchPingListTaskBySwitchIds("30.1.43.242");
+//		
+//		
 //	}
 //	
 //}

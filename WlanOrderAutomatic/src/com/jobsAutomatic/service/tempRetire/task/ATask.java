@@ -36,7 +36,7 @@ public abstract class ATask {
 	public void SendSuccess() {
 		result = new Receipt().SendReceipt(workOrder.getWorkjob_id(), "成功", "");
 		updateWorkOrder.setJdbcTemplate(jdbcTemplate);
-		if (result!=null&&result.equals("0"))
+		if (result.equals("0"))
 			updateWorkOrder.Update("处理完成", 1, "", workOrder.getWorkjob_id());
 		else
 			updateWorkOrder.Update("回单失败", 2, result, workOrder.getWorkjob_id());
@@ -45,9 +45,6 @@ public abstract class ATask {
 		result = new Receipt().SendReceipt(workOrder.getWorkjob_id(), "失败", failReason);
 		updateWorkOrder.setJdbcTemplate(jdbcTemplate);
 		updateWorkOrder.Update("校验失败", 2, failReason, workOrder.getWorkjob_id());
-	}
-	public void NotSend(String failReason){
-		updateWorkOrder.Update("入库失败", 2, failReason, workOrder.getWorkjob_id());
 	}
 	public void CheckSuccess(){
 		
