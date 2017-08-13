@@ -33,7 +33,6 @@ public String CheckWork(){
 				str+=";处理时限必须在下发时间之后";	
 			}
 		} catch (ParseException e) {
-			str+=e.getMessage();
 			e.printStackTrace();
 		}  
 	}

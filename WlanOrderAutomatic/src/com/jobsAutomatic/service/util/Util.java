@@ -40,14 +40,14 @@ public class Util {
 					String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(us.getValue());
 					sql += us.getColumnName() + "=to_date('" + date + "','SYYYY-MM-DD HH24:MI:SS'),";
 				}
-			}
+			} 
 		}
 		return sql.substring(0, sql.length() - 1);
 	}
-
+	
 	public String getWhere(String sql, List<UpdateSql> list) {
 		for (UpdateSql us : list) {
-			if (us.getValue() != null&&!us.getValue().equals("")) {
+			if (us.getValue() != null) {
 				if (us.getVar().equals("VARCHAR")) {
 					sql += us.getColumnName() + "='" + us.getValue() + "' and ";
 				} else if (us.getVar().equals("DECIMAL")) {
@@ -56,16 +56,11 @@ public class Util {
 					String date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(us.getValue());
 					sql += us.getColumnName() + "=to_date('" + date + "','SYYYY-MM-DD HH24:MI:SS') and ";
 				} else if (us.getVar().equals("DATE2")) {
-					sql += us.getColumnName() + "=to_date('" + us.getValue() + "','SYYYY-MM-DD HH24:MI:SS') and ";
-				} else if (us.getVar().equals("LIKE")) {
-					sql += "upper(" + us.getColumnName() + ") like upper('%" + us.getValue() + "%') and ";
-				} else if (us.getVar().equals("NOTLIKE")) {
-					sql += us.getColumnName() + " not like '%" + us.getValue() + "%' and ";
-				}
-			}
+						sql += us.getColumnName() + "=to_date('" + us.getValue() + "','SYYYY-MM-DD HH24:MI:SS') and ";
+					}
+			} 
 		}
-		if (!sql.equals(""))
-			sql = sql.substring(0, sql.length() - 5);
+		if(!sql.equals("")) sql = sql.substring(0, sql.length() - 5);
 		return sql;
 	}
 }

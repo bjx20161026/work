@@ -162,7 +162,7 @@ public class Hotspot implements Serializable
 	/**
 	 * �����Ա
 	 */
-	private String auditor;
+	private long auditor;
 	/**
 	 * ���״̬�� 0 - ��Ϣ¼���� 1- ��Ϣ¼�����  2- �ύ���  3 - ���ͨ�� 4 - ���δͨ��
 	 */
@@ -641,12 +641,12 @@ public class Hotspot implements Serializable
 		this.entryStaff = entryStaff;
 	}
 
-	public String getAuditor()
+	public long getAuditor()
 	{
 		return auditor;
 	}
 
-	public void setAuditor(String auditor)
+	public void setAuditor(long auditor)
 	{
 		this.auditor = auditor;
 	}

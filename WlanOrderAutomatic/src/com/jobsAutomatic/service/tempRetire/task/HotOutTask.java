@@ -24,7 +24,6 @@ public class HotOutTask extends ATask{
 			SendSuccess();
 		}catch(Exception e){
 			e.printStackTrace();
-			NotSend(e.getMessage());
 			logger.error(e.getMessage());
 		}
 	}

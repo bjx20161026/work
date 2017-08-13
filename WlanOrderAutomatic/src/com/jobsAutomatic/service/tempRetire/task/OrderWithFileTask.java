@@ -41,30 +41,23 @@ public class OrderWithFileTask extends ATask {
 			@SuppressWarnings("unchecked")
 			List<Element> filess = files.elements();
 			for (Element file : filess) {
-				String name = file.element("fileName").getText();
-				String ftpUrl = url +"/"+ name;
-				logger.info("ftpUrl:"+ftpUrl);	
+				String ftpUrl = url + file.element("fileName").getText();
+				System.out.println(ftpUrl);		
 				FileOperate fo = new FileOperate(ftpUrl);
 				String filePath = fo.getDownloadFile();
 				ReadWorkJob readWorkJob = new ReadWorkJob();
-				WorkJob workJob = new WorkJob(); 
-				name = name.substring(0,name.lastIndexOf("_"));
-				logger.info(name);
-				workJob.setWorkjob_id(name);
-			    workJob = readWorkJob.readExcel(filePath);
-			    if(workJob == null){
-			    	System.out.print("workJob is null!");
-			    }
-				workJob.setWorkjob_id(name);
+				WorkJob workJob = readWorkJob.readXlsx(filePath);
 				checkWorkJob.setWorkJob(workJob);
 				if (!checkWorkJob.CheckWork().equals("")) {
-					System.out.println("checkWorkJob.CheckWork():"+checkWorkJob.CheckWork());
-					System.out.println(" workOrder.getWorkjob_id():"+ workJob.getWorkjob_id());
-					updateWorkOrder.Insert("校验失败", 2, checkWorkJob.CheckWork(), workJob.getWorkjob_id());
-					new Receipt().SendReceipt(workJob.getWorkjob_id(), "失败", checkWorkJob.CheckWork());	
+					new Receipt().SendReceipt(workOrder.getWorkjob_id(), "失败", checkWorkJob.CheckWork());
+					updateWorkOrder.Update("校验失败", 2, checkWorkJob.CheckWork(), workOrder.getWorkjob_id());
 				} else {
 					OrderTypeTransfer orderTypeTransfer = new OrderTypeTransfer();
 					String type = orderTypeTransfer.Transfer(readWorkJob.getSheetName(filePath));
+					if(type == null){
+						new Receipt().SendReceipt(workOrder.getWorkjob_id(), "失败", checkWorkJob.CheckWork());
+						updateWorkOrder.Update("校验失败", 2, "附件Sheet名不正确", workOrder.getWorkjob_id());
+					}
 					operateWorkOrder.Insert(workJob, type, filePath,ftpUrl);
 				}
 			}
@@ -86,7 +79,7 @@ public class OrderWithFileTask extends ATask {
 	public static void main(String[] args) {
 		OrderWithFileTask orderWithFileTask = new OrderWithFileTask();
 		orderWithFileTask.setXmlText(
-				"<fileInfo><ftpInfo><Type></Type><DataCatalog></DataCatalog><WorkMode></WorkMode><SystemID></SystemID><SessionID></SessionID><MsgSerial></MsgSerial><DeliveryTime></DeliveryTime><ReadyStatusCode></ReadyStatusCode><ReadyStatusDescription></ReadyStatusDescription><ConnectionString>ftp://10.221.232.136:21</ConnectionString><Path>/EOMS_APP/DATA.PM.WLAN_RW_TW_BG.EOMS_APP</Path><userName>EOMS_PUT</userName><password>W1n3m5s#</password><FileList>SH-206-170801-00008_WLAN.xls</FileList><files><file><fileName>SH-206-170801-00008_WLAN.xls</fileName><FileFormat>xls</FileFormat><FileSize>文件大小</FileSize><IsEncryption>是否加密</IsEncryption><CipherKey>密钥</CipherKey><CipherFile>密钥文件</CipherFile><IsCompressed>是否压缩</IsCompressed><CompressKey>压缩密码</CompressKey><DataInfo>数据信息</DataInfo><FieldSeparator>字段分割符</FieldSeparator><LineSeparator>行分割符</LineSeparator><XmlSchema>XmlSchema</XmlSchema><CharSet>字符集</CharSet><FileCheckInfo>文件检验信息</FileCheckInfo></file></files></ftpInfo></fileInfo>");
-	   orderWithFileTask.HandleTask();
+				"<fileInfo><ftpInfo><Type></Type><DataCatalog></DataCatalog><WorkMode></WorkMode><SystemID></SystemID><SessionID></SessionID><MsgSerial></MsgSerial><DeliveryTime></DeliveryTime><ReadyStatusCode></ReadyStatusCode><ReadyStatusDescription></ReadyStatusDescription><ConnectionString>ftp://10.221.18.29:21</ConnectionString><Path>//home/inas/fast-clt-pro/test/</Path><userName>inas</userName><password>1Na512#$</password><FileList>SH-201-170322-00005_WLAN.xls</FileList><files><file><fileName>AP导入.xlsx</fileName><FileFormat>xlsx</FileFormat><FileSize>文件大小</FileSize><IsEncryption>是否加密</IsEncryption><CipherKey>密钥</CipherKey><CipherFile>密钥文件</CipherFile><IsCompressed>是否压缩</IsCompressed><CompressKey>压缩密码</CompressKey><DataInfo>数据信息</DataInfo><FieldSeparator>字段分割符</FieldSeparator><LineSeparator>行分割符</LineSeparator><XmlSchema>XmlSchema</XmlSchema><CharSet>字符集</CharSet><FileCheckInfo>文件检验信息</FileCheckInfo></file></files></ftpInfo></fileInfo>");
+		orderWithFileTask.HandleTask();
 	}
 }

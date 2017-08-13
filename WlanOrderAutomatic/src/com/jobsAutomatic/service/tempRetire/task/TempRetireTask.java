@@ -26,7 +26,7 @@ public class TempRetireTask extends ATask {
 			SendSuccess();
 		} catch (EmptyResultDataAccessException eh) {
 			new Receipt().SendReceipt(workOrder.getWorkjob_id(), "失败", "临时退服对应热点未找到");
-			updateWorkOrder.Update("校验失败", 2, "临时退服对应热点未找到", workOrder.getWorkjob_id(),"SYSTEM");
+			updateWorkOrder.Update("校验失败", 2, "临时退服对应热点未找到", workOrder.getWorkjob_id());
 			logger.error("work_id:"+workOrder.getWorkjob_id()+"临时退服对应热点未找到 --> "+eh.getMessage());
 			eh.printStackTrace();
 		}

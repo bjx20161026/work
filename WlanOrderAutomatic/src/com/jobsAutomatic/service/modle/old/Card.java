@@ -44,19 +44,16 @@ public class Card extends Entity {
 	 * �忨�����ap�������������Թ���AC��
 	 * @deprecated
 	 */
-	@Deprecated
 	private int MAX_AP_NUM_PERMITTED;
 	/**
 	 * �忨������ն��������������Թ���AC��
 	 * @deprecated
 	 */
-	@Deprecated
 	private int MAX_STA_NUM_PERMITTED; 
 	/**
 	 * �����ַ����Թ���AC��
 	 * @deprecated
 	 */
-	@Deprecated
 	private String IP_ADDR;
 	
 	/**

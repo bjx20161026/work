@@ -13,7 +13,6 @@ public class AC extends Device {
 	 * 
 	 * @deprecated
 	 */
-	@Deprecated
 	private String ROOM;
 	/**
 	 * ����

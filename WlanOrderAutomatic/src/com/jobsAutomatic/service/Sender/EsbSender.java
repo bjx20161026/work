@@ -18,7 +18,6 @@ public class EsbSender {
 //	@Value("${esb.operation}")
 	private String esbOperation;
 	private ThreadLocal<Integer> ldc=new ThreadLocal<Integer>(){
-		@Override
 		public Integer initialValue(){
 			return 0;
 		}
@@ -29,7 +28,7 @@ public class EsbSender {
 		Service service=new Service();
 		Call call=null;
 		call = (Call) service.createCall();
-		SOAPHeaderElement serviceEle = new SOAPHeaderElement(new QName("cn.com.boco.HermesService","ServiceCode"),serviceCode);	
+		SOAPHeaderElement serviceEle = new SOAPHeaderElement(new QName("cn.com.boco.HermesService","ServiceCode"),serviceCode);
 		SOAPHeaderElement userEle = new SOAPHeaderElement(new QName("cn.com.boco.HermesService","UserName"),esbSystemCode);
 		SOAPHeaderElement authEle = new SOAPHeaderElement(new QName("cn.com.boco.HermesService","AuthCode"),esbAuthCode);
 		call.addHeader(serviceEle);
