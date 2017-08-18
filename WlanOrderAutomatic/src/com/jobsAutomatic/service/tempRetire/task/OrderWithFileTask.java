@@ -65,7 +65,12 @@ public class OrderWithFileTask extends ATask {
 				} else {
 					OrderTypeTransfer orderTypeTransfer = new OrderTypeTransfer();
 					String type = orderTypeTransfer.Transfer(readWorkJob.getSheetName(filePath));
-					operateWorkOrder.Insert(workJob, type, filePath,ftpUrl);
+					if(type == null){
+						updateWorkOrder.Insert("校验失败", 2, "附件sheet名错误", workJob.getWorkjob_id());
+						new Receipt().SendReceipt(workJob.getWorkjob_id(), "失败","附件sheet名错误");	
+					}else{
+						operateWorkOrder.Insert(workJob, type, filePath,ftpUrl);
+					}
 				}
 			}
 		} catch (Exception e) {

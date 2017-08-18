@@ -414,11 +414,11 @@ public class ReadXlsSheet {
 					dto.setLaCid(getValue(hssfRow.getCell(j)));// 位置区编码
 					break;
 				case 36:
-					if (StringUtils.isBlank(getValue(hssfRow.getCell(j)))) {
-						importMsg.appendMessage("第" + i + "行" + j + "列工单号不能为空");
-						isContinue = false;
-						break;
-					}
+//					if (StringUtils.isBlank(getValue(hssfRow.getCell(j)))) {
+//						importMsg.appendMessage("第" + i + "行" + j + "列工单号不能为空");
+//						isContinue = false;
+//						break;
+//					}
 					dto.setWorkOrderId(getValue(hssfRow.getCell(j)));// 工单号
 					break;
 				case 37:
@@ -460,11 +460,11 @@ public class ReadXlsSheet {
 					dto.setWorkOrderType(type);// 工单类型
 					break;
 				case 39:
-					if (StringUtils.isBlank(getValue(hssfRow.getCell(j)))) {
-						importMsg.appendMessage("第" + i + "行" + j + "列操作人不能为空");
-						isContinue = false;
-						break;
-					}
+//					if (StringUtils.isBlank(getValue(hssfRow.getCell(j)))) {
+//						importMsg.appendMessage("第" + i + "行" + j + "列操作人不能为空");
+//						isContinue = false;
+//						break;
+//					}
 					dto.setOperator(getValue(hssfRow.getCell(j)));// 操作人
 					break;
 				case 40:
