@@ -23,7 +23,8 @@ public class TempRetireTask extends ATask {
 					workOrder.getWorkjob_id());
 			System.out.println(workOrder.getShield_start() + "," + workOrder.getShield_end() + "," + hotspotid);
 			new QueuePut(workOrder.getShield_start(), workOrder.getShield_end(), hotspotid, 4,workOrder.getWorkjob_id());
-			SendSuccess();
+			jdbcTemplate.update("insert into temp_task(workjob_id,startDate,endDate,hotstpotid,projectStatus)values(?,?,?,?,?)",workOrder.getWorkjob_id(),workOrder.getShield_start(), workOrder.getShield_end(),hotspotid,4);
+//			SendSuccess();
 		} catch (EmptyResultDataAccessException eh) {
 			new Receipt().SendReceipt(workOrder.getWorkjob_id(), "失败", "临时退服对应热点未找到");
 			updateWorkOrder.Update("校验失败", 2, "临时退服对应热点未找到", workOrder.getWorkjob_id(),"SYSTEM");

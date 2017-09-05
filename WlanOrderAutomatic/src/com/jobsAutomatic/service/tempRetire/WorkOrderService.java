@@ -18,7 +18,7 @@ public class WorkOrderService {
 		QueueMaker.setQueue(new DelayQueue<RetireTask>());
 		QueueMaker.setJdbcTemplate(jdbcTemplate);
 		QueueMaker.init();
-		System.out.println("doWorkHandle************************************");
+		System.out.println("doWorkHandle... ...");
 		new WorkShedual(jdbcTemplate);
 	}
 	

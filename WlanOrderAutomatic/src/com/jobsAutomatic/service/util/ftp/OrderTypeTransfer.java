@@ -1,10 +1,16 @@
 package com.jobsAutomatic.service.util.ftp;
 
+import java.util.Properties;
+
+import com.jobsAutomatic.service.util.FileTools;
+
 public class OrderTypeTransfer {
 	public String Transfer(String sheetName){
-		if(sheetName.equalsIgnoreCase("AP导入")) return "AP入网";
-		else if(sheetName.equalsIgnoreCase("AP退服")) return "AP变更";
-		else if(sheetName.equalsIgnoreCase("热点导入")) return "热点变更";
-		else return null;
+		Properties pro = FileTools.getProperties("OrderType.properties");
+		for(Object object:pro.keySet()){
+			if(sheetName.equalsIgnoreCase(object.toString()))
+				return pro.getProperty(object.toString());
+		}
+		return null;
 	}
 }
