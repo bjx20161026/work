@@ -51,13 +51,6 @@ public class ListTestController {
 	@Autowired
 	OperateWlanOpreateLog operateWlanOpreateLog;
 
-//	@RequestMapping(value = "/test2/{name}", method = RequestMethod.GET)
-//	public @ResponseBody List<Map<String, Object>> ListTest2(@PathVariable String name) {
-//		System.out.println("abc");
-//		List<Map<String, Object>> list = jdbcTemplate2.queryForList("select * from prm_device@RES where rownum<3");
-//		return list;
-//	}
-
 	@RequestMapping(value = "/getAllOrder", method = RequestMethod.GET)
 	public @ResponseBody List<WorkOrder> getAllOrder() {
 		return operateWorkOrder.getAllOrder();
